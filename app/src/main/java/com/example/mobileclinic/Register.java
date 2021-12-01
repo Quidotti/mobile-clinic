@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -106,10 +107,19 @@ public class Register extends AppCompatActivity {
                                 userInfo.put("isPatient", "1");
                             }
 
-//                          now putting all information into the database
+//                         now putting all information into the database
+
                             df.set(userInfo);
-                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                            finish();
+
+                           if(isDoctorBox.isChecked()){
+                               startActivity(new Intent(getApplicationContext(), Doctor.class));
+                               finish();
+                           }
+
+                           if(isPatientBox.isChecked()){
+                               startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                               finish();
+                           }
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override

@@ -11,10 +11,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.mobileclinic.R;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.api.DocumentationOrBuilder;
+
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -60,7 +60,8 @@ public class Login extends AppCompatActivity {
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(Login.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Login.this, "Login Failed", Toast.LENGTH_SHORT).show();
+                            finish();
                         }
                     });
                 }
@@ -128,8 +129,33 @@ public class Login extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         if(FirebaseAuth.getInstance().getCurrentUser() != null){
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-            finish();
+            DocumentReference df = FirebaseFirestore.getInstance().collection("Users")
+            .document(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            df.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if(documentSnapshot.getString("isAdmin") !=null){
+                    startActivity(new Intent(getApplicationContext(), Admin.class));
+                    finish();
+                    }
+                if(documentSnapshot.getString("isDoctor") !=null){
+                    startActivity(new Intent(getApplicationContext(), Doctor.class));
+                    finish();
+                    }
+
+                if(documentSnapshot.getString("isPatient") !=null){
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    finish();
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    FirebaseAuth.getInstance().signOut();
+                    startActivity(new Intent(getApplicationContext(), Login.class));
+                    finish();
+                }
+            });
         }
     }
 }
