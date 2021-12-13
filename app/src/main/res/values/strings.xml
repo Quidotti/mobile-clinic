@@ -11,4 +11,9 @@
     <string name="dashboard">Dashboard</string>
     <string name="button">Button</string>
     <string name="sign_up">SIGN UP</string>
+    <string name="create_account_or_login_to_explore_our_features">Create account or login to explore our features</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="marvelous">Marvelous</string>
+    <string name="normal">Normal</string>
 </resources>

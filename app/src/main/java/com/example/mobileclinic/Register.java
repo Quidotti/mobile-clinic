@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -26,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Register extends AppCompatActivity {
-    EditText fullName,email,password,phone;
+    EditText email, password, confirmPassword;
     Button returntoLogin;
     Button registerBtn;
     boolean valid = true;
@@ -42,10 +43,9 @@ public class Register extends AppCompatActivity {
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
 
-        fullName = findViewById(R.id.registerName);
         email = findViewById(R.id.registerEmail);
         password = findViewById(R.id.registerPassword);
-        phone = findViewById(R.id.registerPhone);
+        confirmPassword = findViewById(R.id.confirmPassword);
         registerBtn = findViewById(R.id.registerBtn);
         returntoLogin = findViewById(R.id.returntoLogin);
 
@@ -73,18 +73,22 @@ public class Register extends AppCompatActivity {
 
         registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                checkField(fullName);
+            public void onClick(View view) {
                 checkField(email);
                 checkField(password);
-                checkField(phone);
+                checkField(confirmPassword);
 
+//              authenticating the user password and confirm password
+                if(!password.getText().toString().equals(confirmPassword.getText().toString())){
+                    Toast.makeText(Register.this, "password mismatch", Toast.LENGTH_SHORT).show();
+                }
 //              authenticating the checkbox value
                 if(!(isDoctorBox.isChecked() || isPatientBox.isChecked())){
                     Toast.makeText(Register.this, "Please select account type.", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if(valid){
+
 //                start the user registration process
                     fAuth.createUserWithEmailAndPassword(email.getText().toString(), password.getText().toString()).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override
@@ -94,33 +98,30 @@ public class Register extends AppCompatActivity {
                             DocumentReference df = fStore.collection("Users").document(user.getUid());
 
                             Map<String, Object> userInfo = new HashMap<>();
-                            userInfo.put("FullName", fullName.getText().toString());
                             userInfo.put("UserEmail", email.getText().toString());
-                            userInfo.put("PhoneNumber", phone.getText().toString());
+                            userInfo.put("Password", password.getText().toString());
 
 //                          specify if the user is doctor or patient
                             if(isDoctorBox.isChecked()){
                                 userInfo.put("isDoctor", "1");
                             }
                             if(isPatientBox.isChecked()){
-
                                 userInfo.put("isPatient", "1");
                             }
 
 //                         now putting all information into the database
-
-                            df.set(userInfo);
-
+                           df.set(userInfo);
                            if(isDoctorBox.isChecked()){
-                               startActivity(new Intent(getApplicationContext(), Doctor.class));
+                               startActivity(new Intent(getApplicationContext(), Login.class));
                                finish();
                            }
 
                            if(isPatientBox.isChecked()){
-                               startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                               startActivity(new Intent(getApplicationContext(), Login.class));
                                finish();
                            }
                         }
+
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
@@ -135,7 +136,7 @@ public class Register extends AppCompatActivity {
 //     click to return to login ui
         returntoLogin.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 startActivity(new Intent(getApplicationContext(), Login.class));
             }
         });

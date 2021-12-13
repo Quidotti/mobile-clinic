@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
@@ -23,7 +22,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class Login extends AppCompatActivity {
     EditText email,password;
-    Button loginBtn,returntoRegister;
+    Button loginBtn, returntoRegister;
     boolean valid = true;
 
     FirebaseAuth fAuth;
@@ -42,7 +41,6 @@ public class Login extends AppCompatActivity {
         loginBtn = findViewById(R.id.loginBtn);
         returntoRegister = findViewById(R.id.returntoRegister);
 
-
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -54,7 +52,8 @@ public class Login extends AppCompatActivity {
                     fAuth.signInWithEmailAndPassword(email.getText().toString(), password.getText().toString()).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override
                         public void onSuccess(AuthResult authResult) {
-                            Toast.makeText(Login.this, "Loggedin Successfully", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Login.this, "Loggedin Successfully",
+                                    Toast.LENGTH_SHORT).show();
                             checkUserAccessLevel(authResult.getUser().getUid());
                         }
                     }).addOnFailureListener(new OnFailureListener() {
@@ -93,13 +92,11 @@ public class Login extends AppCompatActivity {
                     startActivity(new Intent(getApplicationContext(), Admin.class));
                     finish();
                 }
-
                 if(documentSnapshot.getString("isDoctor") != null){
     //              is Doctor
                     startActivity(new Intent(getApplicationContext(), Doctor.class));
                     finish();
                 }
-
                 if(documentSnapshot.getString("isPatient") !=null){
 //                  is patient
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
@@ -131,6 +128,7 @@ public class Login extends AppCompatActivity {
         if(FirebaseAuth.getInstance().getCurrentUser() != null){
             DocumentReference df = FirebaseFirestore.getInstance().collection("Users")
             .document(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
             df.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -148,6 +146,7 @@ public class Login extends AppCompatActivity {
                     finish();
                     }
                 }
+
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {

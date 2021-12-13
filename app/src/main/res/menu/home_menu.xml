@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_home"
+        android:title="Home"
+        android:icon="@drawable/ic_home_home_24"
+        />
+    <item
+        android:id="@+id/action_appointment"
+        android:title="My Appointments"
+        android:icon="@drawable/ic_appointment_calendar_month_24"
+        />
+  <item
+      android:id="@+id/action_medicalService"
+      android:title="Medical Records"
+      android:icon="@drawable/ic_record_medical_services_24"
+
+      />
+</menu>
